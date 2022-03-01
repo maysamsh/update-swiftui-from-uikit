@@ -10,11 +10,13 @@ import SwiftUI
 
 class ViewController: UIViewController {
     
-    var swiftUIView = SwiftUIView()
+    var swiftUIView: SwiftUIView?
+    var state = SharedViewControllerState()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        swiftUIView.delegate = self
+        swiftUIView = SwiftUIView(state: self.state)
+        swiftUIView?.delegate = self
 
         let hostingController = UIHostingController(rootView: swiftUIView)
         addChild(hostingController)
@@ -35,8 +37,8 @@ class ViewController: UIViewController {
 // MARK: - SwiftUIView Delegate
 extension ViewController: SwiftUIViewDelegate {
     func buttonClicked() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.swiftUIView.setIsActionCalled(value: false)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.swiftUIView?.setIsActionCalled(value: false)
         }
     }
     

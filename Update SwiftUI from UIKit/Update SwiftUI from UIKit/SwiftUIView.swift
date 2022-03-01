@@ -11,24 +11,28 @@ protocol SwiftUIViewDelegate {
     func buttonClicked()
 }
 
-class ObservableAction: ObservableObject {
+class SharedViewControllerState: ObservableObject {
     @Published var isLoading: Bool = false
 }
 
 struct SwiftUIView: View {
     var delegate: SwiftUIViewDelegate?
     
-    @ObservedObject private var observableBool = ObservableAction()
+    @ObservedObject private var state: SharedViewControllerState
+    
+    init(state: SharedState) {
+        self.state = state
+    }
     
     var body: some View {
         VStack {
             Form {
                 Section {
                     Button("Button 1") {
-                        observableBool.isLoading = true
+                        state.isLoading = true
                         delegate?.buttonClicked()
                     }
-                }.disabled(observableBool.isLoading)
+                }.disabled(state.isLoading)
                 
                 Section {
                     Text("Click here to enabled the above button")
@@ -42,12 +46,6 @@ struct SwiftUIView: View {
     }
     
     func setIsActionCalled(value: Bool) {
-        observableBool.isLoading = value
-    }
-}
-
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        SwiftUIView()
+        state.isLoading = value
     }
 }
